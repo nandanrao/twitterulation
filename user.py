@@ -2,7 +2,7 @@ import numpy as np
 from uuid import uuid4
 from collections import namedtuple
 import random
-
+ 
 def gen_tweet_id():
     return uuid4().hex
 
