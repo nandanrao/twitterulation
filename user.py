@@ -2,7 +2,7 @@ import numpy as np
 from uuid import uuid4
 from collections import namedtuple
 import random
- 
+
 def gen_tweet_id():
     return uuid4().hex
 
@@ -11,6 +11,8 @@ Tweet = namedtuple('Tweet', ['id', 'retweeted_status_id', 'userid'])
 class User():
     def __init__(self, userid, propensity, timeline_depth = 1):
         self.userid = userid
+        
+        #propensity is propensity to tweet
         self.propensity = propensity
         self.timeline_depth = timeline_depth
         self.follows = set()
