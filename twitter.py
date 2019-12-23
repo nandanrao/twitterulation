@@ -10,15 +10,16 @@ class Twitter():
 
     def round(self, users):
         self.current_round = {}
-        self.rounds.append(self.current_round)
 
-        prev_round = self.rounds[-2] if len(self.rounds) > 1 else None
+        prev_rounds = self.rounds if len(self.rounds) > 0 else None
 
         tweets = [t for u in users
-                  for t in u.act(prev_round)]
+                  for t in u.act(prev_rounds)]
 
         for t in tweets:
             self.tweet(t)
+
+        self.rounds.append(self.current_round)
 
 
     def simulate(self, users, rounds):

@@ -9,9 +9,10 @@ def gen_tweet_id():
 Tweet = namedtuple('Tweet', ['id', 'retweeted_status_id', 'userid'])
 
 class User():
-    def __init__(self, userid, propensity):
+    def __init__(self, userid, propensity, timeline_depth = 1):
         self.userid = userid
         self.propensity = propensity
+        self.timeline_depth = timeline_depth
         self.follows = set()
         self.tweets = set()
         self.retweets = set()
@@ -30,9 +31,10 @@ class User():
         return new_tweet
 
 
-    def _generate_timeline(self, prev_round):
+    def _generate_timeline(self, prev_rounds):
         timeline = [tweet for user in self.follows
-                        for tweet in prev_round.get(user, [])]
+                    for prev_round in prev_rounds[-self.timeline_depth:]
+                    for tweet in prev_round.get(user, [])]
 
         # filter out tweets that I've retweeted
         timeline = [t for t in timeline
@@ -49,16 +51,16 @@ class User():
         """ returns the retweets of all given tweets """
         return [self._retweet(t) for t in tweets]
 
-    def act(self, prev_round):
-        if prev_round is None:
-            # first round, everyone twets ?
+    def act(self, prev_rounds):
+        if prev_rounds is None:
+            # first round, everyone tweets ?
             return self.tweet(1)
 
         else:
             # What should happen here? Can tweet more than once?
             # decide by propensity?
             if np.random.random() > self.propensity:
-                timeline = self._generate_timeline(prev_round)
+                timeline = self._generate_timeline(prev_rounds)
 
                 # pick tweet to retweet (now is just totally random)
                 to_retweet = [random.choice(timeline)] if timeline else []
